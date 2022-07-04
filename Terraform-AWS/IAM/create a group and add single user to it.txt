@@ -1,0 +1,23 @@
+#Create a group 
+
+resource "aws_iam_group" "group-1"{
+	
+	name	=	"group1"
+
+}
+
+
+# Adding user to the group
+
+resource "aws_iam_group_membership" "usertogroup"{
+	name = "my-test-group-membership"
+
+#users are already created 
+	users =[
+	aws_iam_user.user-aswin.name,
+	aws_iam_user.user-akhil.name,
+	]
+
+	group = aws_iam_group.group-1.name
+}
+

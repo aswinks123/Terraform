@@ -1,0 +1,23 @@
+
+#Create a variable of string type
+
+resource "aws_iam_user" "user-1" {
+
+  #Assigning the variable
+  name =var.user-name   #ash will be assigned here
+}
+
+
+
+
+#Creating a string variable  type
+
+variable "user-name" {
+
+description = "This is the name of the user to create"
+
+  default = "ash"
+
+  type = string
+
+}

@@ -1,0 +1,29 @@
+#Create a MYSQL Database
+
+resource "aws_db_instance" "my-mysql-db"{
+	
+	identifier	=	"mysqldatabase"
+	storage_type	=	"gp2"
+	allocated_storage	=	20
+	engine		=	"mysql"
+	engine_version	=	"8.0"
+	instance_class	=	"db.t2.micro"
+	port	=	"3306"
+	name	=	"mydb"
+
+#using credentials from credentials.tf file
+
+	username	=	var.username
+	password	=	var.password
+
+
+	publicly_accessible	=	true  # not recommended
+	skip_final_snapshot	=	true # to avoild snapshot
+
+
+	tags	=	{
+
+	name	=	"my-database"
+	}
+
+}

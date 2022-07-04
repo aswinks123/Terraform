@@ -1,0 +1,22 @@
+#Creating an INLINE policy
+
+data "aws_iam_policy_document" "s3-access-policy"{
+	
+	statement {
+
+	actions= ["s3:PutObject","s3:GetObject","s3:DeleteObject"]
+	resources = ["*"]
+
+	}
+
+
+}
+
+#Attach the policy to user
+
+resource "aws_iam_user_policy" "s3-policy-attach"{
+	
+	name = "get-put-delete-policy"
+	user = aws_iam_user.user-aswin.name  #user that we alredy created
+	policy = data.aws_iam_policy_document.s3-access-policy.json
+}

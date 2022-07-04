@@ -1,0 +1,14 @@
+#Create a NW-interface with IP in the subnet and attach the SG to it
+
+
+resource "aws_network_interface" "aswin-nic" {
+   subnet_id       = aws_subnet.subnet-1.id
+   private_ips     = ["10.0.1.50"]
+   security_groups = [aws_security_group.allow_web.id]
+   tags = {
+    Name = "aswin-nic"
+ }
+}
+
+
+Note: aws ec2 describe-network-interfaces

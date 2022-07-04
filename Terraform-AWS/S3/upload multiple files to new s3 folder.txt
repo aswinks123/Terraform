@@ -1,0 +1,33 @@
+# Create a Directory in S3--------------------------------------------
+
+variable "named_folder"{
+	
+	type	=	string
+	default	=	"multiple-s3-files"
+}
+
+resource "aws_s3_bucket_object" "base_folder"{
+	bucket = aws_s3_bucket.aswin-bucket-for-ls.id
+	acl = "private"
+	key = "${var.named_folder}/"
+	content_type = "application/x-directory"
+}
+
+
+
+
+
+
+
+
+
+
+# Uploading multiple files to the newly created folder in S3---------------------
+
+resource "aws_s3_bucket_object" "s3-object-inside-dir"{
+	bucket = aws_s3_bucket.aswin-bucket-for-ls.id
+	for_each = fileset("/home/aswin/teraform/create-ec2/test-dir","*")
+	key = "${var.named_folder}/${each.value}"
+	source = "/home/aswin/teraform/create-ec2/test-dir/${each.value}"
+	etag	=	filemd5("/home/aswin/teraform/create-ec2/test-dir/${each.value}")
+}

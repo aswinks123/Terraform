@@ -1,0 +1,32 @@
+Create a Custom Route tables for VPC
+
+resource "aws_route_table" "aswin-route-table" {
+vpc_id = aws_vpc.aswin-vpc.id
+
+route {
+cidr_block = "0.0.0.0/0"
+gateway_id = aws_internet_gateway.aswin-ig.id
+}
+
+route {
+ ipv6_cidr_block = "::/0"
+ gateway_id      = aws_internet_gateway.aswin-ig.id
+  }
+
+  tags = {
+    Name = "aswin-route-table"
+  }
+}
+
+
+#Associate the route table to a subnet
+
+resource "aws_route_table_association" "association" {
+	subnet_id      = aws_subnet.subnet-1.id
+	route_table_id = aws_route_table.aswin-route-table.id
+}
+
+
+
+
+Note : aws ec2 describe-route-tables

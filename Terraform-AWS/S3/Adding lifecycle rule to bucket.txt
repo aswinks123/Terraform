@@ -1,0 +1,61 @@
+#s3-lifecycle-rule
+
+#--Creating an Private s3 bucket ------------------------------------------------
+
+resource "aws_s3_bucket" "aswin-bucket-for-ls" {
+  bucket = "aswin-lifecyclebucket"
+
+  tags = {
+    Name        = "Aswin-lifecyclebucket"
+    Environment = "Prod"
+  }
+
+  # Enabling Versioning---------------------------------------------------------
+
+  versioning {
+    enabled = true
+  }
+
+
+# Enabling life cycle rule to move data to ONZONE-IA after 30 days and GLACIER after 90 days-----------------
+lifecycle_rule {
+    id      = "archive"
+    enabled = true
+
+    prefix = "prod/"
+
+   
+
+    transition {
+      days          = 30
+      storage_class = "ONEZONE_IA"
+    }
+
+    transition {
+      days          = 90
+      storage_class = "GLACIER"
+    }
+
+    expiration {
+      days = 120
+    }
+  
+}
+
+
+}
+
+
+
+#Creating a folder name prod inside  bucket----------------------------------------
+
+resource "aws_s3_bucket_object" "testing-folder" {
+  bucket = aws_s3_bucket.aswin-bucket-for-ls.id
+  acl    = "private"
+  key    = "prod/"    
+  source = "/dev/null"
+}
+
+
+
+

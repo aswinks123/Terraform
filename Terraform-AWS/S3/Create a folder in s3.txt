@@ -1,0 +1,14 @@
+# Create a Directory in S3--------------------------------------------
+
+variable "named_folder"{
+	
+	type	=	string
+	default	=	"multiple-s3-files"
+}
+
+resource "aws_s3_bucket_object" "base_folder"{
+	bucket = aws_s3_bucket.aswin-bucket-for-ls.id
+	acl = "private"
+	key = "${var.named_folder}/"
+	content_type = "application/x-directory"
+}

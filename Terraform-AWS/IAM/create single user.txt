@@ -1,0 +1,25 @@
+#Adding a single user
+
+resource "aws_iam_user" "user-1" {
+  name = "user1"
+}
+
+
+resource "aws_iam_user" "user-2" {
+  name = "user2"
+}
+
+resource "aws_iam_user" "user-3" {
+  name = "user3"
+}
+
+
+
+
+#Providing programatic access to user
+
+resource "aws_iam_access_key" "iam-access-key"{
+	
+	user= aws_iam_user.user-1.name
+}
+

@@ -1,0 +1,12 @@
+Create an Internet Gateway and attach to VPC
+
+resource "aws_internet_gateway" "aswin-ig" {
+  vpc_id = aws_vpc.aswin-vpc.id
+ tags = {
+    Name = "aswin-ig"
+  } 
+}
+
+
+
+Note: aws ec2 describe-internet-gateways

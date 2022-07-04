@@ -1,0 +1,82 @@
+#--Creating an Private s3 bucket ------------------------------------------------
+
+resource "aws_s3_bucket" "aswin-bucket" {
+  bucket = "aswin-bucket"
+
+  tags = {
+    Name        = "Aswin-bucket"
+    Environment = "Dev"
+  }
+
+  # Enabling Versioning---------------------------------------------------------
+
+  versioning {
+    enabled = true
+  }
+
+}
+
+
+
+# Creating an ACL to make bucket  private ---------------------------------------
+
+resource "aws_s3_bucket_acl" "Aswins-Acl" {
+  bucket = aws_s3_bucket.aswin-bucket.id
+  acl    = "private"
+}
+
+
+
+
+
+#Creating new bucket to save logs-----------------------------------------
+
+resource "aws_s3_bucket" "log_bucket" {
+  bucket = "my-log-bucket"
+}
+
+# Creating a policy to allow one s3 to write log to another------------------------------
+
+resource "aws_s3_bucket_acl" "log_bucket_acl" {
+
+  bucket = aws_s3_bucket.log_bucket.id
+
+  acl    = "log-delivery-write"
+}
+
+
+
+
+#Creating logging and mentioning the path to save the log files------------------------------
+resource "aws_s3_bucket_logging" "s3-logging" {
+
+  bucket = aws_s3_bucket.aswin-bucket.id
+
+  target_bucket = aws_s3_bucket.log_bucket.id
+
+  target_prefix = "log/"
+}
+
+
+#Creating a folder name prod inside one bucket------
+
+resource "aws_s3_bucket_object" "folder-test" {
+  bucket = aws_s3_bucket.aswin-bucket.id
+  acl    = "private"
+  key    = "prod/"    
+  source = "/dev/null"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

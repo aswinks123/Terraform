@@ -1,0 +1,11 @@
+#Add user to multiple group
+
+resource "aws_iam_user_group_membership" "add-user-to-multiple-group" {
+  user = aws_iam_user.user-aswin.name  #username
+
+  groups = [     			#groups to add
+    aws_iam_group.group-1.name,
+  	aws_iam_group.group-2.name,
+  ]
+}
+

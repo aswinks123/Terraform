@@ -1,0 +1,26 @@
+# Copying a single file from local to s3 -------------------------------
+
+resource "aws_s3_bucket_object" "s3-single-object"{
+	bucket = aws_s3_bucket.aswin-bucket-for-ls.id
+	key	=	"test-file.txt"
+	source	=	"/home/aswin/teraform/create-ec2/test-file.txt"
+	etag	=	filemd5("/home/aswin/teraform/create-ec2/test-file.txt")
+
+}
+
+
+# Copying multiple files from local to s3-------------------------------
+
+
+resource "aws_s3_bucket_object" "s3-Multi-object"{
+	bucket = aws_s3_bucket.aswin-bucket-for-ls.id
+
+	for_each = fileset("/home/aswin/teraform/create-ec2/test-dir","*")
+	key	=	each.value
+	source	=	"/home/aswin/teraform/create-ec2/test-dir/${each.value}"
+
+	
+	etag	=	filemd5("/home/aswin/teraform/create-ec2/test-dir/${each.value}")
+
+}
+
