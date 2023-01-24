@@ -1,6 +1,3 @@
-
-#Created by : Aswin KS
-
 #First authenticate to Azure using the az login command.
 
 
@@ -30,13 +27,13 @@ resource "azurerm_resource_group" "aswin_resource_group" {
     resource_group_name = azurerm_resource_group.aswin_resource_group.name
  }
 
-#Create a subnet inside the VPC
+#Create a subnet inside the Virtual Network
 
 resource "azurerm_subnet" "aswin-subnet" {
     name = "aswin-subnet"
     resource_group_name = azurerm_resource_group.aswin_resource_group.name
     virtual_network_name = azurerm_virtual_network.aswin-VPC.name
-    address_prefix = "10.0.1.0/24"
+    address_prefixes = ["10.0.1.0/24"]
       
 }
 
@@ -70,7 +67,7 @@ resource "azurerm_network_interface" "aswin-nw-interface" {
 }
 
 
-#Create a Virtual machine in the created VPC
+#Create a Virtual machine in the created Virtual network
 
 resource "azurerm_linux_virtual_machine" "aswin-linux-vm" {
     name = "aswin-linux-vm"
@@ -79,9 +76,12 @@ resource "azurerm_linux_virtual_machine" "aswin-linux-vm" {
     location = "Canada Central"
     size = "Standard_B1s"
     computer_name = "aswin-linux"
-    admin_username= "aswin"
-    admin_password =   "aswinks12345@"
-    disable_password_authentication="false"
+    admin_username= "your-username123"
+    admin_password =   "your-password123"  #use strong password. Use of key pair is recommanded. Use password auth only for testing!
+    disable_password_authentication="false"  #Use this only for testing!
+    
+    #Installing nginx in the VM using custom script
+    custom_data=filebase64("customdata.tpl")
     
     source_image_reference {
       publisher = "Canonical"
@@ -99,7 +99,10 @@ resource "azurerm_linux_virtual_machine" "aswin-linux-vm" {
 }
 
 
-#Create a security group and open port 22
+
+
+
+#Create a security group and open port 22 to SSH
 
 resource "azurerm_network_security_group" "aswin-NSG" {
     name =     "aswin-NSG"
@@ -117,10 +120,22 @@ resource "azurerm_network_security_group" "aswin-NSG" {
         source_address_prefix="*"
         destination_address_prefix="*"
     }
+  security_rule  {
+        name="HTTP"
+        priority=1002
+        direction="Inbound"
+        access="Allow"
+        protocol="Tcp"
+        source_port_range="*"
+        destination_port_range="80"
+        source_address_prefix="*"
+        destination_address_prefix="*"
+    }
 
   
 }
 
+#Create an association to link security group and the NIC of virtual machine
 
 resource "azurerm_network_interface_security_group_association" "aswin-NW-SG-association" {
 
@@ -130,7 +145,7 @@ resource "azurerm_network_interface_security_group_association" "aswin-NW-SG-ass
 }
 
 
-#Print the public IP of VM
+#Print the public IP of VM in terminal to log in
 
 output "public-ip" {
     value = azurerm_linux_virtual_machine.aswin-linux-vm.public_ip_address
